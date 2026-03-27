@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use Caresome\FilamentNeobrutalism\NeobrutalismeTheme;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -26,7 +27,15 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->path('admin')
+            ->path('park')
+            ->spa()
+            ->sidebarWidth('16rem')
+            ->topNavigation()
+            ->breadcrumbs(false)
+            ->brandLogo(fn() => view('logo.icon'))
+            ->brandLogoHeight('3rem')
+            ->favicon(asset('images/iconpark.png'))
+            ->databaseNotifications()
             ->login()
             ->colors([
                 'primary' => Color::Amber,
@@ -39,7 +48,6 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
-                FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -54,6 +62,35 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+            ])
+            ->plugins([
+                NeobrutalismeTheme::make()
+                    ->customize([
+                        'border-width'       => '3px',
+                        'border-width-thick' => '4px',
+
+                        'radius-sm' => '0.25rem',
+                        'radius-md' => '0.5rem',
+                        'radius-lg' => '0.75rem',
+                        'radius-xl' => '1rem',
+
+                        'shadow-offset-sm' => '3px',
+                        'shadow-offset-md' => '5px',
+                        'shadow-offset-lg' => '7px',
+                        'shadow-offset-xl' => '9px',
+
+                        'font-weight-bold'      => '700',
+                        'font-weight-extrabold' => '800',
+                        'font-weight-black'     => '900',
+                        'letter-spacing-normal' => '-0.02em',
+                        'letter-spacing-wide'   => '0.04em',
+
+                        'transition-duration' => '200ms',
+
+                        'spacing-md' => '0.875rem',
+                        'spacing-lg' => '1.25rem',
+                        'spacing-xl' => '1.75rem',
+                    ]),
             ]);
     }
 }
