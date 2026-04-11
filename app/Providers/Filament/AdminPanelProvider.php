@@ -2,7 +2,18 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\BreakdownKendaraanOwner;
+use App\Filament\Widgets\KapasitasAreaAdmin;
+use App\Filament\Widgets\Kapasitasareapetugas;
+use App\Filament\Widgets\KapasitasAreaPetugas as WidgetsKapasitasAreaPetugas;
+use App\Filament\Widgets\PendapatanChartOwner;
+use App\Filament\Widgets\StatsOverviewOwner;
+use App\Filament\Widgets\StatsOverviewPetugas;
+use App\Filament\Widgets\Transaksiaktif;
+use App\Filament\Widgets\TransaksiTerbaruAdmin;
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Caresome\FilamentNeobrutalism\NeobrutalismeTheme;
+use Devonab\FilamentEasyFooter\EasyFooterPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -28,15 +39,17 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('park')
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->spa()
             ->sidebarWidth('16rem')
+            ->darkMode(false)
             ->topNavigation()
             ->breadcrumbs(false)
             ->brandLogo(fn() => view('logo.icon'))
             ->brandLogoHeight('3rem')
             ->favicon(asset('images/iconpark.png'))
-            ->databaseNotifications()
             ->login()
+
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -48,6 +61,16 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
+                BreakdownKendaraanOwner::class,
+                PendapatanChartOwner::class,
+                StatsOverviewOwner::class,
+
+                KapasitasAreaAdmin::class,
+                TransaksiTerbaruAdmin::class,
+
+                WidgetsKapasitasAreaPetugas::class,
+                StatsOverviewPetugas::class,
+                Transaksiaktif::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -64,6 +87,21 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->plugins([
+                EasyFooterPlugin::make()
+                    ->footerEnabled()
+                    ->withFooterPosition('footer')
+                    ->withSentence('ParkFlow |')
+                    ->withBorder()
+                    ->hiddenFromPagesEnabled()
+                    ->hiddenFromPages(['park/login'])
+                    ->withLoadTime('| Halaman dimuat dalam.')
+                    ->withLogo(
+                        asset('images/iconpark.png'),
+                    ),
+                FilamentShieldPlugin::make()
+                    ->navigationLabel('Peran Pengguna')
+                    ->navigationGroup('Manajemen Pengguna')
+                    ->navigationSort(2),
                 NeobrutalismeTheme::make()
                     ->customize([
                         'border-width'       => '3px',

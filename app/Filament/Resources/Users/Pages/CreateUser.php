@@ -11,15 +11,6 @@ class CreateUser extends CreateRecord
 {
     protected static string $resource = UserResource::class;
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            Action::make('back')
-                ->label('Kembali')
-                ->icon('heroicon-o-arrow-left')
-                ->url(static::getResource()::getUrl('index')),
-        ];
-    }
 
     protected function getRedirectUrl(): string
     {
@@ -31,6 +22,15 @@ class CreateUser extends CreateRecord
         return "Tambah Pengguna";
     }
 
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('back')
+                ->label('Kembali')
+                ->icon('heroicon-o-arrow-left')
+                ->url(static::getResource()::getUrl('index')),
+        ];
+    }
     protected function getFormActions(): array
     {
         return [

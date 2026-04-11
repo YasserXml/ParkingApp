@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Users\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
@@ -65,6 +66,15 @@ class UserForm
                             ->maxLength(255)
                             ->dehydrated(false)
                             ->columnSpan(1),
+                        Select::make('role')
+                            ->label('Peran Pengguna')
+                            ->placeholder('Pilih peran yang sesuai')
+                            ->relationship('roles', 'name')
+                            ->preload()
+                            ->searchable()
+                            ->native(false)
+                            ->prefixIcon('heroicon-o-user-group')
+                            ->helperText('Peran menentukan hak akses pengguna dalam sistem'),
                     ]),
             ]);
     }
