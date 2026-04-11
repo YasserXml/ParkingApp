@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('jenis_kendaraan');
             $table->string('warna');
             $table->string('pemilik');
-            $table->string('pemilik');
             $table->timestamps();
         });
     }
