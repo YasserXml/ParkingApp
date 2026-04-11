@@ -1,8 +1,12 @@
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
+@import '../../../../vendor/caresome/filament-neobrutalism-theme/resources/css/theme.css';
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
 @source '../../../../vendor/devonab/filament-easy-footer/resources/views/**/*';
+@source '../../../../vendor/caresome/filament-neobrutalism-theme/resources/views/**/*';
+
+
 
 .fi-footer {
     display: flex;
