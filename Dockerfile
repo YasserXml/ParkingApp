@@ -64,7 +64,7 @@ RUN mkdir -p storage/framework/{sessions,views,cache,testing} \
     && chown -R www-data:www-data /var/www/html \
     && chmod -R 775 storage bootstrap/cache
 
-EXPOSE 8000
+EXPOSE 8080
 
 CMD php artisan config:clear && \
     php artisan cache:clear && \
