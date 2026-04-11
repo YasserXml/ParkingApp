@@ -66,12 +66,12 @@ RUN mkdir -p storage/framework/{sessions,views,cache,testing} \
 
 EXPOSE 8080
 
-CMD php artisan config:clear && \
+CMD php artisan migrate --force && \
+    php artisan config:clear && \
     php artisan cache:clear && \
-    php artisan migrate --force && \
     php artisan storage:link --force && \
     php artisan config:cache && \
     php artisan route:cache && \
     php artisan view:cache && \
     php artisan filament:optimize && \
-    php artisan serve --host=0.0.0.0 --port=${PORT:-8000}
+    php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
