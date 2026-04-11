@@ -1,6 +1,5 @@
-FROM php:8.4-fpm
+FROM php:8.4-cli
 
-# Set working directory
 WORKDIR /var/www/html
 
 # Install system dependencies
@@ -19,60 +18,58 @@ RUN apt-get update && apt-get install -y \
 
 # Install PHP extensions
 RUN docker-php-ext-configure intl \
+    && docker-php-ext-configure gd \
     && docker-php-ext-install \
-    pdo_pgsql \
-    pgsql \
-    mbstring \
-    exif \
-    pcntl \
-    bcmath \
-    gd \
-    zip \
-    intl
+        pdo_pgsql \
+        pgsql \
+        mbstring \
+        exif \
+        pcntl \
+        bcmath \
+        gd \
+        zip \
+        intl \
+        opcache
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Install Node.js
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs
+    && apt-get install -y nodejs \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copy package files for Node dependencies
+# Copy dependency files dulu (layer caching lebih efisien)
 COPY package*.json ./
+RUN npm ci
 
-# Install Node dependencies
-RUN npm install
-
-# Copy ALL application files
-COPY . .
-
-# Install PHP dependencies
+COPY composer.json composer.lock ./
 RUN composer install \
     --no-dev \
     --optimize-autoloader \
     --no-interaction \
+    --no-scripts \
     --prefer-dist
 
-RUN npm run build
+# Copy semua file aplikasi
+COPY . .
 
-# Create directories
-RUN mkdir -p storage/framework/{sessions,views,cache} \
+# Build assets
+RUN npm run build && npm prune --production
+
+# Setup storage & permissions
+RUN mkdir -p storage/framework/{sessions,views,cache,testing} \
     storage/logs \
-    bootstrap/cache
+    bootstrap/cache \
+    && chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 storage bootstrap/cache
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage \
-    && chmod -R 775 /var/www/html/bootstrap/cache
-
-# Expose port
 EXPOSE 8000
 
-# Start command
 CMD php artisan config:clear && \
     php artisan cache:clear && \
     php artisan migrate --force && \
-    php artisan storage:link && \
+    php artisan storage:link --force && \
     php artisan config:cache && \
     php artisan route:cache && \
     php artisan view:cache && \
