@@ -70,8 +70,14 @@ class UserForm
                             ->label('Peran Pengguna')
                             ->placeholder('Pilih peran yang sesuai')
                             ->relationship('roles', 'name')
+                            ->getOptionLabelFromRecordUsing(fn($record) => match ($record->name) {
+                                'admin'       => 'Admin',
+                                'petugas'     => 'Petugas',
+                                'owner'       => 'Owner',
+                                'super_admin' => 'Super Admin',
+                                default       => str($record->name)->headline(),
+                            })
                             ->preload()
-                            ->searchable()
                             ->native(false)
                             ->prefixIcon('heroicon-o-user-group')
                             ->helperText('Peran menentukan hak akses pengguna dalam sistem'),

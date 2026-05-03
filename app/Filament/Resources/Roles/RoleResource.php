@@ -52,15 +52,22 @@ class RoleResource extends Resource
                     ->schema([
                         Section::make()
                             ->schema([
-                                TextInput::make('name')
+                                Select::make('name')
                                     ->label(__('filament-shield::filament-shield.field.name'))
+                                    ->options([
+                                        'admin'       => 'Admin',
+                                        'petugas'     => 'Petugas',
+                                        'owner'       => 'Owner',
+                                        'super_admin' => 'Super Admin',
+                                    ])
                                     ->unique(
                                         ignoreRecord: true,
-                                        /** @phpstan-ignore-next-line */
-                                        modifyRuleUsing: fn(Unique $rule): Unique => Utils::isTenancyEnabled() ? $rule->where(Utils::getTenantModelForeignKey(), Filament::getTenant()?->id) : $rule
+                                        modifyRuleUsing: fn(Unique $rule): Unique => Utils::isTenancyEnabled()
+                                            ? $rule->where(Utils::getTenantModelForeignKey(), Filament::getTenant()?->id)
+                                            : $rule
                                     )
                                     ->required()
-                                    ->maxLength(255),
+                                    ->native(false),
 
                                 TextInput::make('guard_name')
                                     ->label(__('filament-shield::filament-shield.field.guard_name'))
